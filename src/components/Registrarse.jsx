@@ -3,9 +3,20 @@ import { registro, ValidoDatosNoVacios, obtenerPaisesAPI } from '../services/ser
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { cargarPaises } from '../slices/paisesSlice';
+import Seleccionable from './Seleccionable'
 
 const Registrarse = () => {
-    const dispatch = useDispatch()
+    /*Constantes para obtener usuario, contraseña, país y calorias ingresados*/
+    const navigate = useNavigate();
+    const [usuario, setUsuario] = useState('');
+    const [password, setPassword] = useState('');
+    const [pais, setPais] = useState('');
+    const [calorias, setCalorias] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const inputRefUsu = useRef(null);
+    const inputRefPass = useRef(null);
+    const inputRefCalo = useRef(null);
+    const dispatch = useDispatch();
 
     /*Estilos*/
     const container = {
@@ -37,30 +48,17 @@ const Registrarse = () => {
     }
 
     const obtenerPaises = async () => {
-        const paisesAPI = await obtenerPaisesAPI();
-        console.log('paisesAPI', paisesAPI)
-        // setTareas(tareasAPI);
+        const response = await obtenerPaisesAPI();
 
-        dispatch(cargarPaises(paisesAPI));
-
-    }
+        if (response && response.paises) {
+            const paises = response.paises; // Extraer el array de países
+            dispatch(cargarPaises(paises));
+        }
+    };
 
     useEffect(() => {
         obtenerPaises();
     }, [])
-
-
-    /*Constantes para obtener usuario, contraseña, país y calorias ingresados*/
-    const navigate = useNavigate();
-    const [usuario, setUsuario] = useState('');
-    const [password, setPassword] = useState('');
-    const [pais, setPais] = useState('');
-    const [calorias, setCalorias] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
-    const inputRefUsu = useRef(null);
-    const inputRefPass = useRef(null);
-    const inputRefPais = useRef(null);
-    const inputRefCalo = useRef(null);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -83,17 +81,16 @@ const Registrarse = () => {
 
             // Llamamos a la API para proceder al registro
             const response = await registro(usuario, password, pais, calorias);
-
-            // Si la respuesta es exitosa, guardamos credenciales en local storage y navegamos al dashboard
-            if (response.ok) {
-                const { id, apiKey } = response; // Extraemos 'id' y 'apiKey' de la respuesta
-                localStorage.setItem('userId', id);
-                localStorage.setItem('apiKey', apiKey);
-                // Redirigimos a la página de dashboard
-                navigate(`/dashboard`);
-            } else {
-                // Manejar errores de la API si es necesario
+            console.log(response)
+            if (response.codigo === 409) {
                 setErrorMessage(response.mensaje)
+            } else {
+                // Si la respuesta es exitosa, guardamos credenciales en local storage y navegamos al dashboard
+                localStorage.setItem('userId', response.id);
+                localStorage.setItem('apiKey', response.apiKey);
+                // Redirigir a la página de dashboard
+                navigate(`/dashboard`);
+
             }
         } catch (error) {
             // Manejar errores locales (validaciones, etc.)
@@ -104,6 +101,10 @@ const Registrarse = () => {
         console.log('Estado de Redux - Paises:', state.paisesSlice.paises);
         return state.paisesSlice.paises;
     });
+
+    const handleSelect = (pais) => {
+        setPais(pais);
+    }
 
     return (
         <div style={container}>
@@ -131,25 +132,7 @@ const Registrarse = () => {
                         placeholder="Ingrese su contraseña"
                     /></label>
                 <br />
-                <label style={label}>
-                    País:
-                    <select
-                        ref={inputRefPais}
-                        name="pais"
-                        value={pais}
-                        onChange={handleChange}
-                        className="form-control mt-1"
-                    >
-                        <option value="" disabled>
-                            Seleccione su país
-                        </option>
-                        {paises.map((pais) => (
-                            <option key={pais.id} value={pais.id}>
-                                {pais.nombre}
-                            </option>
-                        ))}
-                    </select>
-                </label>
+                <Seleccionable style={label} options={paises} titulo={"Pais:"} handleSelect={handleSelect} />
                 <br />
                 <label style={label}>Calorias Diarias:
                     <input

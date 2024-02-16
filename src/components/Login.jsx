@@ -43,27 +43,7 @@ const Login = () => {
     const inputRefUsu = useRef(null);
     const inputRefPass = useRef(null);
 
-    //REVISAR SI SE NECESITA
-    // const loguear = async () => {
-    //     try {
-    //         const sesion = await login(usuario, password);
-    //         localStorage.setItem('apiKey', sesion.apiKey);
-
-    //     } catch (error) {
-    //         console.log('error', error.message);
-    //     }
-    // }
-
-
-    // useEffect(() => {
-    //     try {
-    //         loguear();
-
-    //     } catch (error) {
-    //         console.log('error', error.message);
-    //     }
-    // }, [])
-
+   
     const handleChange = (event) => {
         const { name, value } = event.target;
 

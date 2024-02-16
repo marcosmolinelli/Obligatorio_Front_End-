@@ -60,7 +60,7 @@ export const registro = async (usuario, password, idPais, calorias) => {
         if (!response.ok) {
             const result = await response.json();
             const { codigo, mensaje } = result;
-            throw new Error(`${mensaje}`);  //Error desconocido
+            throw new Error(`Error ${codigo}: ${mensaje}`);
         }
 
         return await response.json();
@@ -77,83 +77,160 @@ export const ValidoDatosNoVacios = (usuario, password, idPais, calorias) => {
 }
 
 /***** ObtenerPaisesAPI *****/
-export const obtenerPaisesAPI = () => {
+export const obtenerPaisesAPI = async () => {
+    try {
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        const response = await fetch(`${urlBase}/paises.php`, requestOptions);
+
+        if (!response.ok) {
+            const result = await response.json();
+            const { codigo, mensaje } = result;
+            throw new Error(`${mensaje}`);  //  Lanzamos mensaje de error aquí
+        }
+
+        return await response.json();
+    } catch (error) {
+        throw new Error(`${error.message}`);
+    }
+};
+/***** ObtenerPaisesAPI *****/
+
+/***** ObtenerAlimentosAPI *****/
+export const obtenerAlimentosAPI = async () => {
+    let apiKey = localStorage.getItem("apiKey");
+    let userId = localStorage.getItem("userId");
+    try {
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("apikey", apiKey);
+        myHeaders.append("iduser", userId);
+
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+        const response = await fetch(`${urlBase}/alimentos.php`, requestOptions);
+        if (!response.ok) {
+            const result = await response.json();
+            const { codigo, mensaje } = result;
+            throw new Error(`${mensaje}`);  //  Lanzamos mensaje de error aquí
+        }
+        return await response.json();
+    } catch (error) {
+        throw new Error(`${error.message}`);
+    }
+}
+
+/***** ValidoDatosNoVaciosAgregarAlimento *****/
+
+export const validoDatosNoVaciosAgregarAlimento = (alimento, cantidad, fecha) => {
+    //falta hacer que el usuario solo pueda ingresar la fecha de hoy o maximo el dia anterior
+    if (!alimento || !cantidad || !fecha) {
+        throw new Error("Todos los campos son obligatorios.");
+    }
+};
+
+
+/***** agregarRegistroAPI *****/
+export const agregarRegistroAPI = async (idAlimento, cantidad, fecha) => {
+    let apiKey = localStorage.getItem("apiKey");
+    let userId = localStorage.getItem("userId");
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("apikey", apiKey);
+    myHeaders.append("iduser", userId);
 
-    var urlencoded = new URLSearchParams();
+    var raw = JSON.stringify({
+        "idAlimento": idAlimento,
+        "idUsuario": userId,
+        "cantidad": cantidad,
+        "fecha": fecha
+    });
 
     var requestOptions = {
-        method: 'GET',
+        method: 'POST',
         headers: myHeaders,
-        body: urlencoded,
+        body: raw,
         redirect: 'follow'
     };
 
-    fetch(`${urlBase}/paises.php`, requestOptions)
-        .then(response => response.json())
-        .then(json => {
-            console.log('json', json)
-            return json
-        })
-        .catch(error => console.log('error', error));
+    try {
+        const response = await fetch(`${urlBase}/registros.php`, requestOptions)
+        if (!response.ok) {
+            const result = await response.json();
+            const { codigo, mensaje } = result;
+            throw new Error(`${mensaje}`);  //  Lanzamos mensaje de error aquí
+        }
+        return await response.json();
+    } catch (error) {
+        throw new Error(`${error.message}`);
+    }
 }
-/***** ObtenerPaisesAPI *****/
 
-/***** AgregarTareasAPI *****/
-export const agregarRegistroAPI = (idAlimento, cantidad, fecha) => {
-    let idUsuario = localStorage.getItem("userId");
-    return fetch(`${urlBase}/registros.php`, {
-        method: 'POST',
-        body: JSON.stringify({
-            idAlimento: idAlimento,
-            idUsuario: idUsuario,
-            cantidad: cantidad,
-            fecha: fecha
-        }),
-        headers: {
-            'Content-type': 'application/json; charset=UTF-8',
-            'apikey': localStorage.getItem("apiKey"),
-            'iduser': idUsuario
-        },
-    })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                return Promise.reject(response);
-            }
-        })
-        .then(datos => {
-            if (datos.codigo === 200) {
-                const mensaje = `El alimento: ${idAlimento} fue registrado con éxito!`;
-                MostrarMensaje(mensaje);
-            } else if (datos.codigo === 401) {
-                MostrarMensaje(datos.mensaje);
-            }
-        })
-        .catch(Error => {
-            MostrarMensaje(Error.message);
-        });
+
+/***** ObtenerRegistrosAPI *****/
+export const obtenerRegistrosAPI = async () => {
+    let apiKey = localStorage.getItem("apiKey");
+    let userId = localStorage.getItem("userId");
+    try {
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("apikey", apiKey);
+        myHeaders.append("iduser", userId);
+
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+        const response = await fetch(`${urlBase}/registros.php?idUsuario=${userId}`, requestOptions);
+        if (!response.ok) {
+            const result = await response.json();
+            const { codigo, mensaje } = result;
+            throw new Error(`${mensaje}`);  //  Lanzamos mensaje de error aquí
+        }
+        return await response.json();
+    } catch (error) {
+        throw new Error(`${error.message}`);
+    }
 }
-/***** AgregarTareasAPI *****/
 
-/***** ObtenerAlimentosAPI *****/
-export const obtenerAlimentosAPI = () => {
-    let idUsuario = localStorage.getItem("userId");//ver si no conviene ponerla global
-    return fetch(`${urlBase}/alimentos.php`, {
-        method: 'GET',
-        headers: {
-            'Content-type': 'application/json; charset=UTF-8',
-            'apikey': localStorage.getItem("apiKey"),
-            'iduser': idUsuario
-        },
-    })
-        .then(response => response.json())
-        .then(json => {
-            console.log('json', json)
-            return json
-        })
+
+/***** BorrarRegistrosAPI *****/
+export const borrarRegistrosAPI = async (idBorrar) => {
+    let apiKey = localStorage.getItem("apiKey");
+    let userId = localStorage.getItem("userId");
+    try {
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("apikey", apiKey);
+        myHeaders.append("iduser", userId);
+
+        var requestOptions = {
+            method: 'DELETE',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        const response = await fetch(`${urlBase}/registros.php?idRegistro=${idBorrar}`, requestOptions)
+        if (!response.ok) {
+            const result = await response.json();
+            const { codigo, mensaje } = result;
+            throw new Error(`${mensaje}`);  // Lanzamos mensaje de error aquí
+        }
+        return await response.json();
+    } catch (error) {
+        throw new Error(`${error.message}`);
+    }
 }
 
 

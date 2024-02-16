@@ -37,3 +37,19 @@
   }
 }
 
+/* --- tabla registros--- */
+
+.table-container {
+  border-collapse: collapse; /* Combina los bordes de las celdas */
+  width: 100%;
+}
+
+.table-container th, .table-container td {
+  border: 1px solid #ddd; /* Define el grosor y color del borde */
+  padding: 8px; /* Añade un espacio alrededor del contenido de la celda */
+  text-align: left; /* Alinea el texto a la izquierda en las celdas */
+}
+
+.table-container th {
+  background-color: #f2f2f2; /* Color de fondo para las celdas del encabezado */
+}

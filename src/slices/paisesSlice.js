@@ -11,7 +11,6 @@ const paisesSlice = createSlice({
 
         cargarPaises: (state, action) => {
             const paisesIniciales = action.payload;
-            console.log('Cargando países:', paisesIniciales);
             state.paises = paisesIniciales;
         },
 

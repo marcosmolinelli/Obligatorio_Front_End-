@@ -3,6 +3,7 @@ import { agregarRegistroAPI, obtenerAlimentosAPI, validoDatosNoVaciosAgregarAlim
 import { useDispatch, useSelector } from 'react-redux'
 import SelectAlimentos from './SelectAlimentos'
 import { cargarAlimentos } from '../slices/alimentosSlice'
+import { agregarRegistro } from '../slices/registrosSlice'
 
 
 const Agregar = () => {
@@ -14,6 +15,8 @@ const Agregar = () => {
     const inputRefUsu = useRef(null);
     const [errorMessage, setErrorMessage] = useState('');
     const [succesMessage, setSuccesMessage] = useState('');
+    const alimentos = useSelector((state) => state.alimentosSlice.alimentos);
+    const registrosRedux = useSelector((state) => state.registrosSlice.registros);
 
 
     // const obtenerAlimentos = async () => {
@@ -54,18 +57,26 @@ const Agregar = () => {
         try {
             validoDatosNoVaciosAgregarAlimento(alimento, cantidad, fecha);
             const response = await agregarRegistroAPI(alimento, cantidad, fecha);
-            console.log("OA", response);
+            let userId = localStorage.getItem("userId");
             if (response.codigo === 200) {
+                dispatch(agregarRegistro({
+                    id: response.idRegistro,
+                    idAlimento: parseInt(alimento, 10),
+                    idUsuario: parseInt(userId, 10),
+                    cantidad: parseInt(cantidad, 10),
+                    fecha: fecha,
+                }));
                 setSuccesMessage(response.mensaje);
+                // Limpiar los campos después de una operación exitosa
+                setAlimento('');
+                setCantidad('');
+                setFecha('');
             }
         } catch (error) {
             // Manejo de errores: muestra el mensaje de error al usuario
             setErrorMessage(error.message);
         }
     }
-
-
-    const alimentos = useSelector((state) => state.alimentosSlice.alimentos);
 
     const handleSelect = (alimento) => {
         setAlimento(alimento);

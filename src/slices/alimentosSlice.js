@@ -20,10 +20,10 @@ const alimentosSlice = createSlice({
             state.alimentos = [...alimentosIniciales];
         },
 
-        agregarAlimento: (state, action) => {
-            const alimentoNuevo = action.payload;
-            state.alimentos = [...state.alimentos, alimentoNuevo];
-        }
+        // agregarAlimento: (state, action) => {
+        //     const alimentoNuevo = action.payload;
+        //     state.alimentos = [...state.alimentos, alimentoNuevo];
+        // }
 
     },
 });

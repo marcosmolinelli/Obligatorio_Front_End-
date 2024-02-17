@@ -2,42 +2,37 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useAlimento } from '../customHook/useAlimento';
 
-const CaloriasTotales = () => {
+const CaloriasDiarias = () => {
   const registrosRedux = useSelector((state) => state.registrosSlice.registros);
   const idsAlimentos = registrosRedux.map((registro) => registro.idAlimento);
   const obtenerAlimentos = useAlimento();
   const alimentos = obtenerAlimentos(idsAlimentos);
 
   const [totalCalorias, setTotalCalorias] = useState(0);
+  const [today, setToday] = useState(new Date().toISOString().split('T')[0]);
 
   useEffect(() => {
-    // Función para extraer el número de la porción
+    const registrosHoy = registrosRedux.filter(
+      (registro) => registro.fecha === today
+    );
+
     const extraerNumeroPorcion = (porcion) => {
-      // Utilizamos una expresión regular para extraer el número
       const match = porcion.match(/\d+/);
       return match ? parseInt(match[0], 10) : 1;
     };
 
-    // Función para calcular las calorías totales
-    const calcularCaloriasTotales = () => {
-      if (!alimentos || !registrosRedux) {
-        // Asegurarse de que alimentos y registros estén definidos antes de continuar
+    const calcularCaloriasDiarias = () => {
+      if (!alimentos || !registrosHoy) {
         return;
       }
 
       let total = 0;
 
-      // Iterar sobre todos los registros del usuario y sumar las calorías
-      registrosRedux.forEach((registro, index) => {
+      registrosHoy.forEach((registro, index) => {
         const cantidadConsumida = registro.cantidad;
         const porcionAlimento = alimentos[index]?.porcion;
-
-        // Obtener el número de la porción
         const numeroPorcion = extraerNumeroPorcion(porcionAlimento);
-
-        // Calcular la cantidad ajustada
         const cantidadAjustada = cantidadConsumida / numeroPorcion;
-
         const caloriasPorUnidad = alimentos[index]?.calorias;
 
         if (caloriasPorUnidad) {
@@ -48,15 +43,15 @@ const CaloriasTotales = () => {
       setTotalCalorias(total);
     };
 
-    calcularCaloriasTotales();
-  }, [registrosRedux, alimentos]);
+    calcularCaloriasDiarias();
+  }, [registrosRedux, alimentos, today]); 
 
   return (
     <div>
-      <h2>Calorías Totales</h2>
-      <p>Total de calorías ingeridas: {totalCalorias} kcal</p>
+      <h2>Calorías Totales del Día de Hoy</h2>
+      <p>Total de calorías ingeridas hoy: {totalCalorias} kcal</p>
     </div>
   );
 };
 
-export default CaloriasTotales;
+export default CaloriasDiarias;

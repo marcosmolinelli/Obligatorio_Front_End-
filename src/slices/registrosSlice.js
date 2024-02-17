@@ -16,8 +16,12 @@ const registrosSlice = createSlice({
         borrarRegistro: (state, action) => {
             state.registros = state.registros.filter(registro => registro.id !== action.payload);
         },
+        agregarRegistro: (state, action) => {
+            const registroNuevo = action.payload;
+            state.registros = [...state.registros, registroNuevo];
+        }
 
     },
 });
-export const { cargarRegistros, borrarRegistro } = registrosSlice.actions;
+export const { cargarRegistros, borrarRegistro, agregarRegistro } = registrosSlice.actions;
 export default registrosSlice.reducer;

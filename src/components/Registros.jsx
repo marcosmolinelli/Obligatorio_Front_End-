@@ -5,6 +5,7 @@ import { useAlimento } from '../customHook/useAlimento';
 
 const Registros = () => {
     const registros = useSelector((state) => state.registrosSlice.registros);
+    console.log('Registros actualizados:', registros); // Añade esta línea para verificar si los registros se actualizan
     const idsAlimentos = registros.map((registro) => registro.idAlimento);
     const obtenerAlimentos = useAlimento();
     const alimentos = obtenerAlimentos(idsAlimentos);

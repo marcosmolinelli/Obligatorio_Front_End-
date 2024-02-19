@@ -233,6 +233,34 @@ export const borrarRegistrosAPI = async (idBorrar) => {
     }
 }
 
+/***** obtenerUsuariosPorPaís *****/
+export const obtenerUsuariosPorPaisAPI = async (idBorrar) => {
+    let apiKey = localStorage.getItem("apiKey");
+    let userId = localStorage.getItem("userId");
+    try {
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("apikey", apiKey);
+        myHeaders.append("iduser", userId);
+
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+        const response = await fetch(`${urlBase}/usuariosPorPais.php`, requestOptions)
+        if (!response.ok) {
+            console.log('response', response)
+            const result = await response.json();
+            const { codigo, mensaje } = result;
+            throw new Error(`${mensaje}`);  // Lanzamos mensaje de error aquí
+        }
+        return await response.json();
+    } catch (error) {
+        throw new Error(`${error.message}`);
+    }
+}
+
 
 //Se me ocurre que la podemos usar para mostrar mensajes. Ver donde corresponde ponerla
 function MostrarMensaje(mensaje) {

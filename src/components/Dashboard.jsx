@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from 'react'
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux'
 import { obtenerAlimentosAPI, obtenerRegistrosAPI } from '../services/service'
@@ -10,43 +14,15 @@ import Registros from './Registros';
 import { cargarRegistros } from '../slices/registrosSlice';
 import Informe from './Informe';
 import Menu from './Menu';
-import Grafica from './Grafica';
+import GraficaDeCantidadPorAlimentos from './GraficaDeCantidadPorAlimentos'; import MapaUsuarios from './MapaUsuarios';
+import { cargarUsuariosPorPais } from '../slices/usuariosPorPaisesSlice'
+import GraficaDeCaloriasPorFecha from './GraficaDeCaloriasPorFecha';
 
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import { Accordion } from 'react-bootstrap';
-import { useAlimento } from '../customHook/useAlimento';
 
 const Dashboard = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [listaRegistros, setListaRegistros] = useState([]);
-    const obtenerAlimento = useAlimento();
-
-    const callBackAlimentosIngeridos = (acumulador, valActual) => {
-        //si los alimentos estan cargados o no
-        //Preguntamos si hay alimentos cargados por el usuario
-
-        //si el id del alimento esta cargado
-        if (acumulador[valActual.idAlimento]) {
-            //sumamos uno
-            acumulador[valActual.idAlimento] = acumulador[valActual.idAlimento] + 1;
-        }
-        //sino, lo creamos y empezamos en 1
-        else {
-            acumulador[valActual.idAlimento] = 1;
-        }
-
-        return acumulador
-    }
-    //obtenemos el resultado de la suma de cantidad ingerida por alimentos
-    const resultado = listaRegistros.reduce(callBackAlimentosIngeridos, {});
-    //obtenemos la cantidad de alimentos
-    const valores = Object.values(resultado);
-    //obtenemos el id del alimento
-    const listaAlimentoId = Object.keys(resultado);
-
 
 
     const obtenerRegistros = async () => {
@@ -65,9 +41,12 @@ const Dashboard = () => {
         dispatch(cargarAlimentos(alimentosAPI.alimentos));
     }
 
+
+
     useEffect(() => {
         obtenerRegistros();
         obtenerAlimentos();
+        //obtenerUsuariosPorPaisAPI();
     }, [])
 
     return (
@@ -82,12 +61,9 @@ const Dashboard = () => {
                         <Outlet></Outlet>
                     </Col>
                     <Col>
-                        <Grafica
-                            etiquetas={listaAlimentoId}
-                            datos={valores}
-                            nombreGrafica={"Grafica cantidad de alimentos"}
-                            nombreDatos={"Nombre Datos"}
-                        />
+                        <GraficaDeCantidadPorAlimentos />
+                        <GraficaDeCaloriasPorFecha />
+                        <MapaUsuarios />
                     </Col>
                 </Row>
 

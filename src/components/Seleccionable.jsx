@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
+import styles from '../styles/login.module.css'
 
-const Seleccionable = ({ options, titulo, handleSelect, style }) => {
+const Seleccionable = ({ options, titulo, handleSelect }) => {
 
     const onChangeSelect = (event) => {
         const opcion = event.target.value;
@@ -11,7 +12,7 @@ const Seleccionable = ({ options, titulo, handleSelect, style }) => {
     console.log('Valor de options:', options);
     return (
         <>
-            <label style={style}>{titulo}
+            <label className={styles.label}>{titulo}
                 < select style={{ display: 'block', marginTop: '5px' }} onChange={onChangeSelect}>
                     {paises?.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                 </select >

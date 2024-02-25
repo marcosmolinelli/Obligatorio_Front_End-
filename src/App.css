@@ -32,6 +32,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -40,22 +41,28 @@
 /* --- tabla registros--- */
 
 .table-container {
-  border-collapse: collapse; /* Combina los bordes de las celdas */
+  border-collapse: collapse;
+  /* Combina los bordes de las celdas */
   width: 100%;
 }
 
-.table-container th, .table-container td {
-  border: 1px solid #ddd; /* Define el grosor y color del borde */
-  padding: 8px; /* Añade un espacio alrededor del contenido de la celda */
-  text-align: left; /* Alinea el texto a la izquierda en las celdas */
+.table-container th,
+.table-container td {
+  border: 1px solid #ddd;
+  /* Define el grosor y color del borde */
+  padding: 8px;
+  /* Añade un espacio alrededor del contenido de la celda */
+  text-align: left;
+  /* Alinea el texto a la izquierda en las celdas */
 }
 
 .table-container th {
-  background-color: #f2f2f2; /* Color de fondo para las celdas del encabezado */
+  background-color: #f2f2f2;
+  /* Color de fondo para las celdas del encabezado */
 }
 
 /* --- menu --- */
-.menu{
+.menu {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -67,6 +74,10 @@
   margin-bottom: 20px;
 }
 
-.menu button{
+.menu button {}
 
+
+/* Estilo para ocultar el botón de cierre en toasts de error */
+.Toastify__toast--error .Toastify__close-button {
+  display: none !important;
 }

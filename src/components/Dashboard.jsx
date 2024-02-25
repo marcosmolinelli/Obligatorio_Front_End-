@@ -17,6 +17,8 @@ import Menu from './Menu';
 import GraficaDeCantidadPorAlimentos from './GraficaDeCantidadPorAlimentos'; import MapaUsuarios from './MapaUsuarios';
 import { cargarUsuariosPorPais } from '../slices/usuariosPorPaisesSlice'
 import GraficaDeCaloriasPorFecha from './GraficaDeCaloriasPorFecha';
+import ContadorTiempo from './Contador';
+
 
 
 const Dashboard = () => {
@@ -36,41 +38,47 @@ const Dashboard = () => {
     };
     const obtenerAlimentos = async () => {
         const alimentosAPI = await obtenerAlimentosAPI();
-        //console.log('alimentosAPI', alimentosAPI)
-        // setTareas(tareasAPI);
         dispatch(cargarAlimentos(alimentosAPI.alimentos));
     }
-
-
+    const [apiKey, setapiKey] = useState("")
 
     useEffect(() => {
-        obtenerRegistros();
-        obtenerAlimentos();
-        //obtenerUsuariosPorPaisAPI();
+        // Verificamos si hay datos en el localStorage para saber si hay usuario logueado
+        const usuarioEnSesion = localStorage.getItem("apiKey");
+        setapiKey(usuarioEnSesion)
+
+        if (usuarioEnSesion) {
+            obtenerRegistros();
+            obtenerAlimentos();
+        } else {
+            //navegar al login
+            navigate("/login");
+        }
     }, [])
 
     return (
-        <div>
-            <Container>
-                <Menu />
-                <Row>
-                    <Col>
-                        <Agregar />
-                        <Registros />
-                        <Informe />
-                        <Outlet></Outlet>
-                    </Col>
-                    <Col>
-                        <GraficaDeCantidadPorAlimentos />
-                        <GraficaDeCaloriasPorFecha />
-                        <MapaUsuarios />
-                    </Col>
-                </Row>
-
-            </Container>
-
-
-        </div>
+        <Container>
+            {apiKey ? (
+                <>
+                    <Menu />
+                    <Row>
+                        <Col>
+                            <Agregar />
+                            <Registros />
+                            <Informe />
+                            <ContadorTiempo />
+                        </Col>
+                        <Col>
+                            <GraficaDeCantidadPorAlimentos />
+                            <GraficaDeCaloriasPorFecha />
+                            <MapaUsuarios />
+                        </Col>
+                    </Row>
+                </>
+            ) : (
+                <p>No hay usuario logueado. Redirigiendo a la página de inicio de sesión...</p>
+            )}
+        </Container>
     );
 };
 export default Dashboard;

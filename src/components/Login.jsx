@@ -1,58 +1,26 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { login } from '../services/service'
-import { useNavigate } from
-    "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import 'react-toastify/dist/ReactToastify.css';
+import style from '../styles/login.module.css';
 
 const Login = () => {
-
-    /*Estilos*/
-    const container = {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100vw',
-        height: '100vh',
-    }
-
-    const content = {
-        paddingLeft: '12%',
-        paddingRight: '12%'
-    }
-
-    const title = {
-        textAlign: 'center',
-        marginBottom: '1em',
-        fontSize: '24px',
-        color: '#00bcd4',
-        fontWeight: '800',
-    }
-
-    const label = {
-        fontSize: '14px',
-        fontWeight: '600',
-        color: '#00bcd4',
-        marginBottom: '10px'
-    }
 
     /*Constantes para obtener usuario y contraseña ingresados*/
     const navigate = useNavigate();
     const [usuario, setUsuario] = useState('');
     const [password, setPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
-    const inputRefUsu = useRef(null);
-    const inputRefPass = useRef(null);
 
-   
     const handleChange = (event) => {
         const { name, value } = event.target;
 
         if (name === 'usuario') {
             setUsuario(value);
-            setErrorMessage(''); // Limpiar el mensaje de error al cambiar el usuario
         } else if (name === 'password') {
             setPassword(value);
-            setErrorMessage(''); // Limpiar el mensaje de error al cambiar la contraseña
         }
 
     }
@@ -63,18 +31,42 @@ const Login = () => {
             const log = await login(usuario, password);
 
             if (log.codigo === 409) {
-                setErrorMessage(log.mensaje) // Usuario y/o contraseña incorrectos
+                toast.error(log.mensaje, {
+                    autoClose: 2000,
+                    icon: false,
+                    style: {
+                        backgroundColor: '#FF5252', // Fondo rojo
+                        color: '#FFFFFF', // Texto blanco
+                    },
+                });
+                setTimeout(() => {
+                    toast.dismiss();
+                }, 2000);
+                setUsuario('');
+                setPassword('');
             } else {
                 localStorage.setItem('userId', log.id);
                 localStorage.setItem('apiKey', log.apiKey);
+                localStorage.setItem('caloriasDiariasPrevistas', log.caloriasDiarias);
                 // Redirigir a la página de dashboard
                 navigate(`/dashboard`);
-
             }
         } catch (error) {
-            setErrorMessage(error?.message || 'Hubo un error al procesar la solicitud. Inténtalo de nuevo más tarde.');
-        }
-    };
+            toast.error(error?.message || 'Hubo un error al procesar la solicitud. Inténtalo de nuevo más tarde.', {
+                autoClose: 2000,
+                icon: false,
+                style: {
+                    backgroundColor: '#FF5252', // Fondo rojo
+                    color: '#FFFFFF', // Texto blanco
+                },
+            });
+            setTimeout(() => {
+                toast.dismiss();
+            }, 2000);
+            setUsuario('');
+            setPassword('');
+        };
+    }
 
     const handleRegistroClick = () => {
         navigate('/registrarse');
@@ -82,37 +74,33 @@ const Login = () => {
 
     return (
         <>
-            <div style={container}>
-                <div style={content}>
-                    <h3 style={title}>Login</h3>
-                    <label style={label}>Usuario:
-                        <input
-                            ref={inputRefUsu}
-                            type="text"
-                            name="usuario"
-                            value={usuario}
-                            onChange={handleChange}
-                            className="form-control mt-1"
-                            placeholder="Ingrese su usuario"
-                        /></label>
-                    <br />
-                    <label style={label}>Contraseña:
-                        <input
-                            ref={inputRefPass}
-                            type="password"
-                            name="password"
-                            value={password}
-                            onChange={handleChange}
-                            className="form-control mt-1"
-                            placeholder="Ingrese su contraseña"
-                        /></label>
-                    <br />
-                    <button type="submit" onClick={handleSubmit} disabled={usuario.length === 0 || password.length === 0} className="btn btn-primary">
-                        INICIAR SESION
-                    </button>
-                    <br />
+            <div className={style.container}>
+                <div className={style.content}>
+                    <h3 className={style.title}>Login</h3>
+                    <Form >
+                        <Form.Group className="mb-3" controlId="formBasicUsuario">
+                            <Form.Label className={style.label}>Usuario</Form.Label>
+                            <Form.Control type="text"
+                                name="usuario"
+                                value={usuario}
+                                onChange={handleChange}
+                                className="form-control mt-1"
+                                placeholder="Ingrese su usuario" />
+                        </Form.Group>
+                        <Form.Group className="mb-3" controlId="formBasicPassword">
+                            <Form.Label className={style.label}>Password</Form.Label>
+                            <Form.Control type="password"
+                                name="password"
+                                value={password}
+                                onChange={handleChange}
+                                className="form-control mt-1"
+                                placeholder="Ingrese su contraseña" />
+                        </Form.Group>
+                        <Button type="button" onClick={handleSubmit} disabled={usuario.length === 0 || password.length === 0} className="btn btn-primary">
+                            INICIAR SESION
+                        </Button>
+                    </Form>
                     <p style={{ marginTop: '20px' }}>Si aún no tenés usuario, <span style={{ color: '#00bcd4', cursor: 'pointer' }} onClick={handleRegistroClick}>registrate aquí</span>.</p>
-                    {errorMessage && <div style={{ color: 'red', marginTop: '10px' }}>{errorMessage}</div>}
                 </div>
             </div>
 
@@ -120,4 +108,4 @@ const Login = () => {
     )
 }
 
-export default Login
+export default Login    

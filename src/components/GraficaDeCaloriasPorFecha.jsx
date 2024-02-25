@@ -1,80 +1,79 @@
 import Grafica from './Grafica';
-import { useAlimentoGrafica } from '../customHook/useAlimentoGrafica';
-import { obtenerRegistrosAPI } from '../services/service'
-import React, { useState, useEffect } from 'react'
-import { cargarRegistros } from '../slices/registrosSlice';
-import { useDispatch } from 'react-redux'
+import { useAlimento } from '../customHook/useAlimento';
+import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import moment from 'moment';
 
 const GraficaDeCaloriasPorFecha = () => {
-    const [listaRegistros, setListaRegistros] = useState([]);
-    const obtenerAlimento = useAlimentoGrafica();
-    const dispatch = useDispatch();
+  const obtenerAlimento = useAlimento();
+  const registrosRedux = useSelector((state) => state.registrosSlice.registros);
 
-    const fechaActual = new Date();
-    const diaDeLaSemanaActual = fechaActual.getDay();
-    const diasDiferencia = diaDeLaSemanaActual === 0 ? 6 : diaDeLaSemanaActual - 1; // Ajuste para manejar que el domingo es 0
-    const domingoDeEstaSemana = new Date(
-        fechaActual.getFullYear(),
-        fechaActual.getMonth(),
-        fechaActual.getDate() - diasDiferencia
-    );
+  const fechaActual = moment();
+  const inicioSemanaPasada = moment().subtract(7, 'days');
+  const finSemanaPasada = moment().subtract(1, 'days');
 
-    const esRegistroDeEstaSemana = (fechaRegistro) => {
-        const fechaRegistroDate = new Date(fechaRegistro);
-        return fechaRegistroDate >= domingoDeEstaSemana && fechaRegistroDate <= fechaActual;
-    };
-    const diasConCantidadesCero = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'].reduce((acumulador, dia) => {
-        acumulador[dia] = 0;
-        return acumulador;
-    }, {});
+  const esRegistroDeLaSemanaPasada = (fechaRegistro) => {
+    const fechaRegistroMoment = moment(fechaRegistro);
+    return fechaRegistroMoment.isSameOrAfter(inicioSemanaPasada) && fechaRegistroMoment.isSameOrBefore(finSemanaPasada);
+  };
 
-    const callBackAlimentosIngeridos = (acumulador, valActual) => {
-        console.log('valActual.fecha', esRegistroDeEstaSemana(valActual.fecha))
-        if (esRegistroDeEstaSemana(valActual.fecha)) {
-            const fechaRegistroDate = new Date(valActual.fecha);
-            const diaDeLaSemanaRegistro = fechaRegistroDate.getDay();
-            const diasDeLaSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-            const nombreDelDiaRegistro = diasDeLaSemana[diaDeLaSemanaRegistro];
+  const extraerNumeroPorcion = (porcion) => {
+    if (porcion && porcion.match) {
+      const match = porcion.match(/\d+/);
+      return match ? parseInt(match[0], 10) : 1;
+    }
+    return 1;
+  };
 
-            acumulador[nombreDelDiaRegistro] = (acumulador[nombreDelDiaRegistro] || 0) + valActual.cantidad;
-            console.log('acumulador, valActual.cantidad', acumulador, valActual.cantidad)
+  // Obtener los idAlimentos necesarios para useAlimento
+  const idsAlimentos = registrosRedux
+    .filter((registro) => esRegistroDeLaSemanaPasada(registro.fecha))
+    .map((registro) => registro.idAlimento);
 
-        }
-        return acumulador;
-    };
-    const obtenerRegistros = async () => {
-        try {
-            const response = await obtenerRegistrosAPI();
+  // Obtener la información de alimentos
+  const alimentos = obtenerAlimento(idsAlimentos);
 
-            if (response && response.registros) {
-                const registros = response.registros;
-                dispatch(cargarRegistros(registros));
-                setListaRegistros(registros);
-            }
-        } catch (error) {
-            console.error("Error al obtener registros:", error);
-        }
-    };
+  // Obtener los días de la semana pasada en orden
+  const diasSemanaPasada = [];
+  for (let i = 6; i >= 0; i--) {
+    const dia = finSemanaPasada.clone().subtract(i, 'days').format('dddd');
+    diasSemanaPasada.push(dia);
+  }
 
-    useEffect(() => {
-        obtenerRegistros();
-    }, []);
-    const resultado = listaRegistros.reduce(callBackAlimentosIngeridos, { ...diasConCantidadesCero });
-    const etiquetas = Object.keys(resultado);
-    const datos = Object.values(resultado);
+  // Calcular las calorías por día
+  const diasConCalorias = registrosRedux.reduce((acumulador, valActual) => {
+    const fechaRegistroMoment = moment(valActual.fecha);
+    const nombreDelDiaRegistro = fechaRegistroMoment.format('dddd');
 
-    // Limitar la cantidad de datos para mejorar la visualización
-    const limiteCantidad = 10000; // Puedes ajustar este valor según tus necesidades
-    const datosFiltrados = datos.map(cantidad => (cantidad > limiteCantidad ? limiteCantidad : cantidad));
+    if (esRegistroDeLaSemanaPasada(valActual.fecha) && alimentos[valActual.idAlimento]) {
+      const porcionAlimento = alimentos[valActual.idAlimento].porcion;
+      const numeroPorcion = extraerNumeroPorcion(porcionAlimento);
+      const cantidadAjustada = valActual.cantidad / numeroPorcion;
+      const caloriasPorUnidad = alimentos[valActual.idAlimento].calorias;
 
-    return (
-        <Grafica
-            etiquetas={etiquetas}
-            datos={datosFiltrados}
-            nombreGrafica={"Grafica de alimentación"}
-            nombreDatos={"Calorías acumuladas"}
-        />
-    );
-};
+      if (caloriasPorUnidad) {
+        acumulador[nombreDelDiaRegistro] = (acumulador[nombreDelDiaRegistro] || 0) + cantidadAjustada * caloriasPorUnidad;
+      }
+    }
+
+    return acumulador;
+  }, {});
+
+  // Generar etiquetas y datos para la gráfica
+  const etiquetas = diasSemanaPasada;
+  const datos = etiquetas.map((dia) => diasConCalorias[dia] || 0);
+
+  const limiteCantidad = 1000;
+  const datosFiltrados = datos.map(calorias => (calorias > limiteCantidad ? limiteCantidad : calorias));
+
+  return (
+    <Grafica
+      etiquetas={etiquetas}
+      datos={datosFiltrados}
+      nombreGrafica={"Grafica de alimentación"}
+      nombreDatos={"Calorías acumuladas"}
+    />
+  );
+}
 
 export default GraficaDeCaloriasPorFecha;

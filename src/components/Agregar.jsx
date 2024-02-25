@@ -1,44 +1,23 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { agregarRegistroAPI, obtenerAlimentosAPI, validoDatosNoVaciosAgregarAlimento } from '../services/service'
 import { useDispatch, useSelector } from 'react-redux'
 import SelectAlimentos from './SelectAlimentos'
-import { cargarAlimentos } from '../slices/alimentosSlice'
 import { agregarRegistro } from '../slices/registrosSlice'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import moment from 'moment';
+import { useAlimento } from '../customHook/useAlimento'
+
+
 
 
 const Agregar = () => {
-    const refInput = useRef(null)
     const dispatch = useDispatch();
     const [alimento, setAlimento] = useState('');
     const [cantidad, setCantidad] = useState('');
     const [fecha, setFecha] = useState('');
-    const inputRefUsu = useRef(null);
-    const [errorMessage, setErrorMessage] = useState('');
-    const [succesMessage, setSuccesMessage] = useState('');
+    const [selectedAlimento, setSelectedAlimento] = useState('');
     const alimentos = useSelector((state) => state.alimentosSlice.alimentos);
-    const registrosRedux = useSelector((state) => state.registrosSlice.registros);
-
-
-    // const obtenerAlimentos = async () => {
-    //     const alimentosAPI = await obtenerAlimentosAPI();
-    //     console.log('alimentosAPI', alimentosAPI)
-    //     // setTareas(tareasAPI);
-    //     if (alimentosAPI && alimentosAPI.alimentos) {
-    //         const alimentos = alimentosAPI.alimentos; // Extraer el array de alimentos
-    //         dispatch(cargarAlimentos(alimentos));
-    //     }
-    // }
-
-    const obtenerAlimentos = async () => {
-        const alimentosAPI = await obtenerAlimentosAPI();
-        //console.log('alimentosAPI', alimentosAPI)
-        // setTareas(tareasAPI);
-        dispatch(cargarAlimentos(alimentosAPI.alimentos));
-    }
-
-    useEffect(() => {
-        obtenerAlimentos();
-    }, [])
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -47,15 +26,26 @@ const Agregar = () => {
             setAlimento(value);
         } else if (name === 'cantidad') {
             setCantidad(value);
-        } else if (name === 'fecha') {  // Cambiado de 'setFecha'
+        } else if (name === 'fecha') {
             setFecha(value);
         }
     }
-
-
     const handleClick = async () => {
         try {
             validoDatosNoVaciosAgregarAlimento(alimento, cantidad, fecha);
+
+            // Validamos que la fecha elegida sea menor o igual a la fecha de hoy
+            const fechaActual = moment().format('YYYY-MM-DD');
+            if (fecha > fechaActual) {
+                throw new Error('La fecha seleccionada debe ser menor o igual a la fecha actual.');
+            }
+
+            // Validamos que la cantidad sea mayor que cero
+            const cantidadNumerica = parseInt(cantidad, 10);
+            if (isNaN(cantidadNumerica) || cantidadNumerica <= 0) {
+                throw new Error('La cantidad debe ser un número mayor que cero.');
+            }
+
             const response = await agregarRegistroAPI(alimento, cantidad, fecha);
             let userId = localStorage.getItem("userId");
             if (response.codigo === 200) {
@@ -66,38 +56,59 @@ const Agregar = () => {
                     cantidad: parseInt(cantidad, 10),
                     fecha: fecha,
                 }));
-                setSuccesMessage(response.mensaje);
-                // Limpiar los campos después de una operación exitosa
+                toast.success('Registro creado con éxito', {
+                    autoClose: 2000,
+                    icon: false,
+                    style: {
+                        backgroundColor: '#4CAF50',
+                        color: '#FFFFFF',
+                    },
+                });
+
+                // Restablecer los valores del estado
+                setSelectedAlimento('');
                 setAlimento('');
                 setCantidad('');
                 setFecha('');
             }
         } catch (error) {
-            // Manejo de errores: muestra el mensaje de error al usuario
-            setErrorMessage(error.message);
+            const errorMessage = error?.message || 'Hubo un error al procesar la solicitud. Inténtalo de nuevo más tarde.';
+            toast.error(errorMessage, {
+                autoClose: 2000,
+                icon: false,
+                style: {
+                    backgroundColor: '#FF5252',
+                    color: '#FFFFFF',
+                },
+            });
+            // Restablecer los valores del estado
+            setSelectedAlimento('');
+            setAlimento('');
+            setCantidad('');
+            setFecha('');
         }
     }
 
     const handleSelect = (alimento) => {
         setAlimento(alimento);
+        setSelectedAlimento(alimento);
     }
 
     return (
-        <div >
-            <div >
-                <h3 >Agregar alimento</h3>
-                <SelectAlimentos options={alimentos} titulo={"Alimento:"} handleSelect={handleSelect} />
-                <label >Cantidad:
-                    <input
-                        ref={inputRefUsu}
-                        type="text"
-                        name="cantidad"
-                        value={cantidad}
-                        onChange={handleChange}
-                        className="form-control mt-1"
-                        placeholder="Cantidad"
-                    /></label>
-                <br />
+        <div>
+            <h3>Agregar alimento</h3>
+            <SelectAlimentos options={alimentos} titulo={"Alimento:"} handleSelect={handleSelect} selectedValue={selectedAlimento} />
+            <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+                <label style={{ marginRight: '10px' }}>Cantidad:</label>
+                <input
+                    type="text"
+                    name="cantidad"
+                    value={cantidad}
+                    onChange={handleChange}
+                    className="form-control mt-1"
+                    placeholder="Cantidad"
+                />
+                <label style={{ marginLeft: '10px', marginRight: '10px' }}>Fecha:</label>
                 <input
                     type="date"
                     id="fecha"
@@ -106,13 +117,10 @@ const Agregar = () => {
                     onChange={handleChange}
                     required
                 />
-                <br />
-                <button onClick={handleClick} className="btn btn-primary">
-                    Agregar alimento
-                </button>
-                {errorMessage && <div style={{ color: 'red', marginTop: '10px' }}>{errorMessage}</div>}
-                {succesMessage && <div style={{ color: 'green', marginTop: '10px' }}>{succesMessage}</div>}
             </div>
+            <button onClick={handleClick} className="btn btn-primary" style={{ marginTop: '10px' }}>
+                Agregar alimento
+            </button>
         </div>
     )
 }

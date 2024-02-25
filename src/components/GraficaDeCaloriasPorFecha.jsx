@@ -7,14 +7,12 @@ import moment from 'moment';
 const GraficaDeCaloriasPorFecha = () => {
   const obtenerAlimento = useAlimento();
   const registrosRedux = useSelector((state) => state.registrosSlice.registros);
-
   const fechaActual = moment();
   const inicioSemanaPasada = moment().subtract(7, 'days');
-  const finSemanaPasada = moment().subtract(1, 'days');
 
   const esRegistroDeLaSemanaPasada = (fechaRegistro) => {
     const fechaRegistroMoment = moment(fechaRegistro);
-    return fechaRegistroMoment.isSameOrAfter(inicioSemanaPasada) && fechaRegistroMoment.isSameOrBefore(finSemanaPasada);
+    return fechaRegistroMoment.isSameOrAfter(inicioSemanaPasada) && fechaRegistroMoment.isSameOrBefore(fechaActual);
   };
 
   const extraerNumeroPorcion = (porcion) => {
@@ -25,22 +23,18 @@ const GraficaDeCaloriasPorFecha = () => {
     return 1;
   };
 
-  // Obtener los idAlimentos necesarios para useAlimento
   const idsAlimentos = registrosRedux
     .filter((registro) => esRegistroDeLaSemanaPasada(registro.fecha))
     .map((registro) => registro.idAlimento);
 
-  // Obtener la información de alimentos
   const alimentos = obtenerAlimento(idsAlimentos);
 
-  // Obtener los días de la semana pasada en orden
   const diasSemanaPasada = [];
   for (let i = 6; i >= 0; i--) {
-    const dia = finSemanaPasada.clone().subtract(i, 'days').format('dddd');
+    const dia = fechaActual.clone().subtract(i, 'days').format('dddd');
     diasSemanaPasada.push(dia);
   }
 
-  // Calcular las calorías por día
   const diasConCalorias = registrosRedux.reduce((acumulador, valActual) => {
     const fechaRegistroMoment = moment(valActual.fecha);
     const nombreDelDiaRegistro = fechaRegistroMoment.format('dddd');
@@ -59,7 +53,6 @@ const GraficaDeCaloriasPorFecha = () => {
     return acumulador;
   }, {});
 
-  // Generar etiquetas y datos para la gráfica
   const etiquetas = diasSemanaPasada;
   const datos = etiquetas.map((dia) => diasConCalorias[dia] || 0);
 

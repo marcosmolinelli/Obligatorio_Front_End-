@@ -1,0 +1,58 @@
+.registros{
+    padding: 0 20px;
+    margin-bottom: 20PX;
+    display: grid;
+    grid-template: 80px 70px 200px/ 100%;
+    gap: 5px;
+    overflow: scroll;
+}
+
+
+
+h2{
+    color: #00bcd4;
+    font-weight: 800;
+    text-align: center;
+    margin: 0 auto;
+    height: 50px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+select{
+    box-sizing: border-box;/*Lo uso para que se acoplen al contorno del gird*/
+	padding: 5px;
+	border: 1px solid #0e97af;
+	border-radius: 5px;
+    width: 100%;
+} 
+
+select:hover{
+    background-color:#cad5d6;
+    font-weight: bolder;
+}
+
+table{
+    border-collapse:collapse;
+}
+thead{
+    height: 50px;
+}
+
+th{
+    background-color: #0c7583;
+    color: white;
+    text-align: left;
+}
+
+tr:hover{
+    background-color: #42c3d4;
+}
+
+.p{
+    color: red;
+    background-color: #d1dcdd;
+    text-align: center;
+    line-height: 50px;
+}

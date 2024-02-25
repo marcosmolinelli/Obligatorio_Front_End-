@@ -69,7 +69,7 @@ const CaloriasDiarias = () => {
 
   return (
     <div>
-      <h2>Calorías Totales del Día de Hoy</h2>
+      <h3>Calorías Totales del Día de Hoy</h3>
       <p>Total de calorías ingeridas hoy: <span style={{ color }}> {totalCalorias} kcal </span></p>
     </div>
   );

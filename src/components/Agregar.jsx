@@ -7,6 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment';
 import { useAlimento } from '../customHook/useAlimento'
+import style from '../styles/agregar.module.css'
 
 
 
@@ -95,30 +96,30 @@ const Agregar = () => {
     }
 
     return (
-        <div>
-            <h3>Agregar alimento</h3>
+        <div className={style.contenedor}>
+            <h2 className={style.title}>Agregar alimento</h2>
             <SelectAlimentos options={alimentos} titulo={"Alimento:"} handleSelect={handleSelect} selectedValue={selectedAlimento} />
-            <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
-                <label style={{ marginRight: '10px' }}>Cantidad:</label>
-                <input
-                    type="text"
-                    name="cantidad"
-                    value={cantidad}
-                    onChange={handleChange}
-                    className="form-control mt-1"
-                    placeholder="Cantidad"
-                />
-                <label style={{ marginLeft: '10px', marginRight: '10px' }}>Fecha:</label>
-                <input
-                    type="date"
-                    id="fecha"
-                    name="fecha"
-                    value={fecha}
-                    onChange={handleChange}
-                    required
-                />
-            </div>
-            <button onClick={handleClick} className="btn btn-primary" style={{ marginTop: '10px' }}>
+            <label >Cantidad:</label>
+            <input
+                type="text"
+                name="cantidad"
+                value={cantidad}
+                onChange={handleChange}
+                className={style.cantidad}
+                placeholder="Cantidad"
+            />
+            <label >Fecha:</label>
+            <input
+                className={style.fecha}
+                type="date"
+                id="fecha"
+                name="fecha"
+                value={fecha}
+                onChange={handleChange}
+                required
+            />
+
+            <button onClick={handleClick} className="btn btn-primary" >
                 Agregar alimento
             </button>
         </div>

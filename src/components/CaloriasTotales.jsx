@@ -21,21 +21,20 @@ const CaloriasTotales = () => {
     // Función para calcular las calorías totales
     const calcularCaloriasTotales = () => {
       if (!alimentos || !registrosRedux) {
-        // Asegurarse de que alimentos y registros estén definidos antes de continuar
         return;
       }
 
       let total = 0;
 
-      // Iterar sobre todos los registros del usuario y sumar las calorías
+      // Iteraramos sobre todos los registros del usuario y sumar las calorías
       registrosRedux.forEach((registro, index) => {
         const cantidadConsumida = registro.cantidad;
         const porcionAlimento = alimentos[index]?.porcion;
 
-        // Obtener el número de la porción
+        // Obtenemos el número de la porción
         const numeroPorcion = extraerNumeroPorcion(porcionAlimento);
 
-        // Calcular la cantidad ajustada
+        // Calculamos la cantidad ajustada
         const cantidadAjustada = cantidadConsumida / numeroPorcion;
 
         const caloriasPorUnidad = alimentos[index]?.calorias;
@@ -53,7 +52,7 @@ const CaloriasTotales = () => {
 
   return (
     <div>
-      <h2>Calorías Totales</h2>
+      <h3>Calorías Totales</h3>
       <p>Total de calorías ingeridas: {totalCalorias} kcal</p>
     </div>
   );

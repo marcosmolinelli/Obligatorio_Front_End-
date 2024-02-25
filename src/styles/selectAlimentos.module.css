@@ -1,0 +1,23 @@
+.contenedor{
+    display: grid;
+    grid-template: 20px 40px / 100%;
+    gap: 5px;
+}
+
+.select{
+    width: 100%;
+}
+
+select{
+    box-sizing: border-box;/*Lo uso para que se acoplen al contorno del gird*/
+	padding: 5px;
+	border: 1px solid #0e97af;
+	border-radius: 5px;
+    width: 100%;
+} 
+
+select:hover{
+    background-color:#cad5d6;
+    font-weight: bolder;
+}
+

@@ -1,0 +1,20 @@
+.header{
+    display: flex;
+    justify-content: space-between;
+    max-width: 1440px;
+    background-color: #f4f8f8;
+}
+
+.title {
+    display: inline;
+    text-align: center;
+    margin: 1em;
+    color: #00bcd4;
+    font-weight: 800;
+}
+
+.salir{
+    text-align: center;
+    margin: 3em;
+
+}

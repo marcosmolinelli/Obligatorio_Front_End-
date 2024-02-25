@@ -2,6 +2,7 @@ import Grafica from './Grafica';
 import { useAlimentoGrafica } from '../customHook/useAlimentoGrafica';
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { style } from '../styles/graficaPorCantidadAlimentos.module.css'
 
 
 

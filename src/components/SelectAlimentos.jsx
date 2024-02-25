@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import style from '../styles/selectAlimentos.module.css';
 
 const SelectAlimentos = ({ options, titulo, handleSelect, selectedValue }) => {
     const [unidad, setUnidad] = useState('');
@@ -20,13 +21,13 @@ const SelectAlimentos = ({ options, titulo, handleSelect, selectedValue }) => {
     const alimentos = [{ id: "", name: "Seleccione un alimento" }, ...options];
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-            <label style={{ marginRight: '10px' }}>{titulo}</label>
-            <select
-                style={{ marginRight: '10px' }}
+        <div className={style.contenedor}>
+            <label >{titulo}</label>
+            <select className={style.select}
                 onChange={onChangeSelect}
                 value={selectedValue}
             >
+                <option value="" selected disabled>Seleccione alimento:</option>
                 {alimentos?.map(a => <option key={a.id} value={a.id}>{a.nombre}</option>)}
             </select>
             {unidad && <p style={{ margin: 0 }}>Porción: {unidad}</p>}

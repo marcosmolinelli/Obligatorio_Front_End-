@@ -4,6 +4,7 @@ import { borrarRegistro } from '../slices/registrosSlice';
 import { borrarRegistrosAPI } from '../services/service';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import style from '../styles/registro.module.css'
 
 const Registro = ({ id, cantidad, fecha, alimento, imagen }) => {
     const dispatch = useDispatch();
@@ -13,7 +14,7 @@ const Registro = ({ id, cantidad, fecha, alimento, imagen }) => {
             const response = await borrarRegistrosAPI(id);
             dispatch(borrarRegistro(id));
             toast.success('Registro eliminado con éxito', {
-                autoClose: 2000, 
+                autoClose: 2000,
                 style: {
                     backgroundColor: '#4CAF50', // Fondo verde 
                     color: '#FFFFFF', // Texto blanco
@@ -38,7 +39,7 @@ const Registro = ({ id, cantidad, fecha, alimento, imagen }) => {
             </td>
             <td>{cantidad}</td>
             <td>
-                <button onClick={handleClick}>BORRAR</button>
+                <button onClick={handleClick} className="btn btn-primary" >Borrar</button>
             </td>
         </tr>
     );

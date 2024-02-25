@@ -48,6 +48,8 @@ const Login = () => {
                 localStorage.setItem('userId', log.id);
                 localStorage.setItem('apiKey', log.apiKey);
                 localStorage.setItem('caloriasDiariasPrevistas', log.caloriasDiarias);
+                localStorage.setItem('nombreUsuario', usuario);
+
                 // Redirigir a la página de dashboard
                 navigate(`/dashboard`);
             }

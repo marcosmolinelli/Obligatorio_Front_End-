@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
+import style from '../styles/contado.module.css';
 
 const ContadorTiempo = () => {
   const fechaObjetivo = moment('2024-03-31T00:00:00'); // Fecha objetivo
@@ -29,8 +30,8 @@ const ContadorTiempo = () => {
   };
 
   return (
-    <div>
-      <h2>Tiempo Restante</h2>
+    <div className={style.contenedor}>
+      <h3>Tiempo Restante</h3>
       <p>{formatearDuracion(tiempoRestante)}</p>
     </div>
   );

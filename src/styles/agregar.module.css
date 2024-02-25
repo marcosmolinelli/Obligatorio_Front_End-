@@ -1,0 +1,43 @@
+
+
+h2{
+    color: #00bcd4;
+    font-weight: 800;
+}
+
+label{
+    color: #00bcd4;
+    font-weight: 600;
+}
+
+.contenedor{
+    padding: 20px;
+    display: grid;
+    grid-template: 80px 70px repeat(2,20px 40px) 40px/ 100%;
+    gap: 5px;
+}
+
+.title {
+    text-align: center;
+    margin: 0 auto;
+    height: 50px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+input{
+    box-sizing: border-box; /* Lo uso para que se acoplen al contorno del gird */
+    padding: 5px;
+    border: 1px solid #0e97af;
+    border-radius: 5px;
+    width: 100%;
+    
+}
+
+input:hover{
+    background-color:#cad5d6;
+    font-weight: bolder;
+}
+
+

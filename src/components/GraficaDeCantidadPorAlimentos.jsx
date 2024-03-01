@@ -2,7 +2,8 @@ import Grafica from './Grafica';
 import { useAlimentoGrafica } from '../customHook/useAlimentoGrafica';
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { style } from '../styles/graficaPorCantidadAlimentos.module.css'
+import style from '../styles/graficaPorCantidadAlimentos.module.css';
+
 
 
 
@@ -58,8 +59,10 @@ const GraficaDeCantidadPorAlimentos = () => {
         <Grafica
             etiquetas={nombresAlimentos}
             datos={valores}
-            nombreGrafica={"Grafica de alimentación"}
-            nombreDatos={"Alimentos ingeriodos"}
+            nombreGrafica={"Grafica de cantidades de alimentos"}
+            nombreDatos={"Alimentos ingeridos"}
+            // Aplicar la clase de estilo al nombre de la gráfica
+            estiloNombreGrafica={style.nombreGrafica}  // Cambio aquí
         />
     )
 }

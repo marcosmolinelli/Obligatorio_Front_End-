@@ -54,7 +54,6 @@ const Registrarse = () => {
 
             // Llamamos a la API para proceder al registro
             const response = await registro(usuario, password, pais, calorias);
-            console.log(response);
             if (response.codigo === 409) {
                 toast.error(response.mensaje, {
                     autoClose: 2000,
@@ -108,6 +107,17 @@ const Registrarse = () => {
         setPais(pais);
     }
 
+    const [apiKey, setapiKey] = useState("")
+    useEffect(() => {
+        // Verificamos si hay datos en el localStorage para saber si hay usuario logueado
+        const usuarioEnSesion = localStorage.getItem("apiKey");
+        setapiKey(usuarioEnSesion)
+
+        if (usuarioEnSesion) {
+            navigate("/");
+        }
+    }, [])
+
     return (
         <div className={style.container}>
             <div className={style.content}>
@@ -147,7 +157,7 @@ const Registrarse = () => {
                             placeholder="Ingrese calorias diarias" />
                     </Form.Group>
                     <br />
-                    <Button type="button"  onClick={handleClick} disabled={usuario.length === 0 || password.length === 0 || pais.length === 0 || calorias.length === 0} className="btn btn-primary">
+                    <Button type="button" onClick={handleClick} disabled={usuario.length === 0 || password.length === 0 || pais.length === 0 || calorias.length === 0} className="btn btn-primary">
                         REGISTRARME
                     </Button>
                 </Form>

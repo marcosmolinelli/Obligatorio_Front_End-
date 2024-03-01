@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { login } from '../services/service'
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
@@ -73,6 +73,17 @@ const Login = () => {
     const handleRegistroClick = () => {
         navigate('/registrarse');
     };
+    const [apiKey, setapiKey] = useState("")
+    useEffect(() => {
+        // Verificamos si hay datos en el localStorage para saber si hay usuario logueado
+        const usuarioEnSesion = localStorage.getItem("apiKey");
+        setapiKey(usuarioEnSesion)
+
+        if (usuarioEnSesion) {
+            navigate("/");
+        }
+    }, [])
+
 
     return (
         <>
@@ -102,10 +113,9 @@ const Login = () => {
                             INICIAR SESION
                         </Button>
                     </Form>
-                    <p style={{ marginTop: '20px' }}>Si aún no tenés usuario, <span style={{ color: '#00bcd4', cursor: 'pointer' }} onClick={handleRegistroClick}>registrate aquí</span>.</p>
+                    <p style={{ marginTop: '20px', color: 'black' }}>Si aún no tenés usuario, <span style={{ color: '#00bcd4', cursor: 'pointer' }} onClick={handleRegistroClick}>registrate aquí</span>.</p>
                 </div>
             </div>
-
         </>
     )
 }

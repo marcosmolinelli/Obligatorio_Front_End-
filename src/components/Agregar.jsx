@@ -9,9 +9,6 @@ import moment from 'moment';
 import { useAlimento } from '../customHook/useAlimento'
 import style from '../styles/agregar.module.css'
 
-
-
-
 const Agregar = () => {
     const dispatch = useDispatch();
     const [alimento, setAlimento] = useState('');
@@ -106,7 +103,7 @@ const Agregar = () => {
                 value={cantidad}
                 onChange={handleChange}
                 className={style.cantidad}
-                placeholder="Cantidad"
+                placeholder="Cantidad en gramos o unidades, según corresponda."
             />
             <label >Fecha:</label>
             <input

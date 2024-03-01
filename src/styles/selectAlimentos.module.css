@@ -9,6 +9,7 @@
 }
 
 select{
+    display: none;
     box-sizing: border-box;/*Lo uso para que se acoplen al contorno del gird*/
 	padding: 5px;
 	border: 1px solid #0e97af;
@@ -19,5 +20,9 @@ select{
 select:hover{
     background-color:#cad5d6;
     font-weight: bolder;
+}
+
+label{
+    width: 100%;
 }
 

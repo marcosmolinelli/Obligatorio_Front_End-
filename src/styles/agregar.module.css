@@ -5,7 +5,7 @@ h2{
     font-weight: 800;
 }
 
-label{
+label {
     color: #00bcd4;
     font-weight: 600;
 }
@@ -24,6 +24,7 @@ label{
     margin-top: 20px;
     margin-bottom: 10px;
     text-align: center;
+    background-color: rgba(244, 248, 248, 0.9);
 }
 
 input{
@@ -38,6 +39,13 @@ input{
 input:hover{
     background-color:#cad5d6;
     font-weight: bolder;
+}
+
+
+p {
+    color: #00bcd4;
+    font-weight: 600;
+    background-color: rgba(244, 248, 248, 0.9);
 }
 
 

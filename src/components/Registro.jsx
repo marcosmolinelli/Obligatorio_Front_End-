@@ -30,14 +30,18 @@ const Registro = ({ id, cantidad, fecha, alimento, imagen }) => {
             });
         }
     }
+
+    // Extrae la unidad de la propiedad 'porcion' del alimento
+    const unidad = alimento?.porcion.slice(-1)
+
     return (
         <tr>
             <td>{fecha}</td>
             <td>{alimento?.nombre}</td>
             <td>
-                <img src={imagen} />
+                <img src={imagen} alt={`Imagen de ${alimento?.nombre}`} />
             </td>
-            <td>{cantidad}</td>
+            <td>{cantidad} {unidad}</td>
             <td>
                 <button onClick={handleClick} className="btn btn-primary" >Borrar</button>
             </td>

@@ -7,10 +7,10 @@ const CaloriasDiarias = () => {
   const registrosRedux = useSelector((state) => state.registrosSlice.registros);
   const idsAlimentos = registrosRedux.map((registro) => registro.idAlimento);
   const obtenerAlimentos = useAlimento();
-  const alimentos = obtenerAlimentos(idsAlimentos);
   const [totalCalorias, setTotalCalorias] = useState(0);
   const [today, setToday] = useState("");
   const caloriasDiariasPrevistas = localStorage.getItem("caloriasDiariasPrevistas");
+  const alimentos = obtenerAlimentos(idsAlimentos);
 
   useEffect(() => {
     const obtenerHoy = moment().format('YYYY-MM-DD');
@@ -20,12 +20,13 @@ const CaloriasDiarias = () => {
     );
 
     const extraerNumeroPorcion = (porcion) => {
-      const match = porcion.match(/\d+/);
+      const porcionSinUltimoCaracter = porcion.slice(0, -1);
+      const match = porcionSinUltimoCaracter.match(/\d+/);
       return match ? parseInt(match[0], 10) : 1;
-    };
+    }
 
     const calcularCaloriasDiarias = () => {
-      if (!alimentos || !registrosHoy) {
+      if (alimentos.length == 0 || alimentos == undefined || registrosHoy.length == 0 || registrosHoy == undefined) {
         return;
       }
 
@@ -34,6 +35,7 @@ const CaloriasDiarias = () => {
       registrosHoy.forEach((registro) => {
         const idAlimento = registro.idAlimento;
         const alimento = alimentos.find((a) => a.id === idAlimento);
+
 
         if (alimento) {
           const cantidadConsumida = registro.cantidad;

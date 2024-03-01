@@ -7,6 +7,7 @@ import { cargarUsuariosPorPais } from '../slices/usuariosPorPaisesSlice';
 import { cargarPaises } from '../slices/paisesSlice';
 import { usePais } from '../customHook/usePaises';
 import { useUsuatiosPorPais } from '../customHook/useUsuariosPorPais';
+import style from '../styles/mapa.module.css'
 
 const MapaUsuarios = () => {
     const listaPaises = useSelector((state) => state.paisesSlice.paises);
@@ -57,7 +58,7 @@ const MapaUsuarios = () => {
 
     return (
         <>
-            <h1>Mapa</h1>
+            <h2>Mapa</h2>
             <div style={{ margin: '0 auto', height: '100px' }}>
                 <Mapa markersData={markersData} />
             </div>

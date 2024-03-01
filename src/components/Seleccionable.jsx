@@ -9,7 +9,6 @@ const Seleccionable = ({ options, titulo, handleSelect }) => {
     }
     const paises = [{ id: "", name: "Seleccione un país" }, ...options];
 
-    console.log('Valor de options:', options);
     return (
         <>
             <label className={styles.label}>{titulo}

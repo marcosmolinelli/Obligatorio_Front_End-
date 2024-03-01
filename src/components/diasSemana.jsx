@@ -10,8 +10,6 @@ const diasDeLaSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'V
 // Obtener el nombre del día de la semana actual
 const nombreDelDia = diasDeLaSemana[diaDeLaSemana];
 
-console.log(`Hoy es ${nombreDelDia}.`);
-
 // Supongamos que tienes un conjunto de datos con valores por día
 const datosPorDia = {
     Domingo: 10,
@@ -25,5 +23,3 @@ const datosPorDia = {
 
 // Sumar los datos por día
 const sumaDeDatosPorDia = datosPorDia[nombreDelDia];
-
-console.log(`La suma de datos para ${nombreDelDia} es: ${sumaDeDatosPorDia}`);

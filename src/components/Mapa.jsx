@@ -8,9 +8,9 @@ import 'leaflet/dist/leaflet.css';
 
 //recibe una lista de marcas, cada una tiene un titulo, contenido y lat, lng, 
 function Mapa({ markersData }) {
-    const center = [-18.498440, -59.232900];
+    const center = [-10, -60];
     const zoom = 3;
-    const size = { minWidth: '400px', minHeight: '400px' }
+    const size = { minWidth: '400px', minHeight: '270px' }
     const urlTileLayer = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 
     const customMarkerIcon = L.icon({
@@ -45,4 +45,4 @@ function Mapa({ markersData }) {
     )
 }
 
-export default Mapa
+export default Mapa 

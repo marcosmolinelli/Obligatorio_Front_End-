@@ -3,7 +3,7 @@
 td,th{
     border: 1px solid #5cb6b6;
 }
-tr:nth-child(n+2){
+tr:nth-child(n+1){
     background-color: white;
 }
 tr:nth-child(even){

@@ -9,6 +9,7 @@ import {
     Legend,
 } from 'chart.js';
 import { Bar, Doughnut } from 'react-chartjs-2';
+import style from '../styles/graficaPorCantidadAlimentos.module.css';
 
 
 ChartJS.register(
@@ -46,7 +47,12 @@ const Grafica = ({ etiquetas, datos, nombreGrafica, nombreDatos }) => {
         ],
     };
 
-    return <Bar options={options} data={data} />;
+    return (
+        <div>
+            <h2>{nombreGrafica ? nombreGrafica : "Grafica"}</h2>
+            <Bar options={options} data={data} />
+        </div>
+    );
 }
 
 export default Grafica

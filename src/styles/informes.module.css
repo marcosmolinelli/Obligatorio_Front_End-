@@ -3,6 +3,7 @@
     display: grid;
     grid-template: 80px 70px 70px/ 100%;
     gap: 5px;
+    background-color: rgba(244, 248, 248, 0.7);
 }
 
 h3{

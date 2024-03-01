@@ -13,14 +13,20 @@ const CaloriasTotales = () => {
   useEffect(() => {
     // Función para extraer el número de la porción
     const extraerNumeroPorcion = (porcion) => {
-      // Utilizamos una expresión regular para extraer el número
-      const match = porcion.match(/\d+/);
-      return match ? parseInt(match[0], 10) : 1;
-    };
+      if (porcion) {
+        const porcionSinUltimoCaracter = porcion.slice(0, -1);
+        const match = porcionSinUltimoCaracter.match(/\d+/);
+        return match ? parseInt(match[0], 10) : 1;
+      }
+      else {
+        return 0;
+      }
+    }
+
 
     // Función para calcular las calorías totales
     const calcularCaloriasTotales = () => {
-      if (!alimentos || !registrosRedux) {
+      if (alimentos.length == 0 || registrosRedux.length == 0) {
         return;
       }
 

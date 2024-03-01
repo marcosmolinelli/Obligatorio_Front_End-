@@ -18,6 +18,7 @@ h2{
     margin-top: 20px;
     margin-bottom: 10px;
     text-align: center;
+    background-color: rgba(244, 248, 248, 0.9);
 }
 
 select{
